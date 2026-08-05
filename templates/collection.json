@@ -170,6 +170,10 @@
               },
               "blocks": {}
             },
+            "okendo_star_rating_col": {
+              "type": "okendo-star-rating",
+              "settings": {}
+            },
             "price_EzJzMm": {
               "type": "price",
               "settings": {
@@ -195,6 +199,7 @@
           "block_order": [
             "card-gallery",
             "product_title_4nY4eT",
+            "okendo_star_rating_col",
             "price_EzJzMm"
           ]
         }

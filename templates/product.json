@@ -150,6 +150,10 @@
                   },
                   "blocks": {}
                 },
+                "okendo_star_rating_pdp": {
+                  "type": "okendo-star-rating",
+                  "settings": {}
+                },
                 "price_tVjtKg": {
                   "type": "price",
                   "settings": {
@@ -175,6 +179,7 @@
               },
               "block_order": [
                 "text_xrnftG",
+                "okendo_star_rating_pdp",
                 "price_tVjtKg"
               ]
             },
@@ -324,6 +329,24 @@
         "padding-block-end": 0
       }
     },
+    "okendo_reviews_section_pdp": {
+      "type": "section",
+      "blocks": {
+        "okendo_reviews_widget_pdp": {
+          "type": "okendo-reviews-widget",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "okendo_reviews_widget_pdp"
+      ],
+      "settings": {
+        "content_direction": "column",
+        "section_width": "page-width",
+        "padding-block-start": 48,
+        "padding-block-end": 48
+      }
+    },
     "product_recommendations_qggXJq": {
       "type": "product-recommendations",
       "blocks": {
@@ -413,6 +436,10 @@
               },
               "blocks": {}
             },
+            "okendo_star_rating_recs": {
+              "type": "okendo-star-rating",
+              "settings": {}
+            },
             "price_gLWgA6": {
               "type": "price",
               "settings": {
@@ -439,6 +466,7 @@
           "block_order": [
             "product_card_gallery_DNizbJ",
             "product_title_M7MJkb",
+            "okendo_star_rating_recs",
             "price_gLWgA6"
           ]
         }
@@ -469,6 +497,7 @@
   },
   "order": [
     "main",
+    "okendo_reviews_section_pdp",
     "product_recommendations_qggXJq"
   ]
 }

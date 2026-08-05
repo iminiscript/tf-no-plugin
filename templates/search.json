@@ -127,6 +127,10 @@
               },
               "blocks": {}
             },
+            "okendo_star_rating_search": {
+              "type": "okendo-star-rating",
+              "settings": {}
+            },
             "price_fYkUgG": {
               "type": "price",
               "name": "t:names.product_price",
@@ -153,6 +157,7 @@
           "block_order": [
             "product_card_gallery_cFExAi",
             "product_title_j7qXTx",
+            "okendo_star_rating_search",
             "price_fYkUgG"
           ]
         }

@@ -1,0 +1,8 @@
+{% if product != blank %}
+  <div
+    data-oke-star-rating
+    data-oke-reviews-product-id="shopify-{{ product.id }}"
+  >
+    {{ product.metafields.okendo.StarRatingSnippet }}
+  </div>
+{% endif %}

@@ -1,0 +1,31 @@
+{% liquid
+  assign okendo_product = closest.product
+
+  if okendo_product == blank and request.visual_preview_mode
+    assign okendo_product = collections.all.products.first
+  endif
+%}
+
+<div class="okendo-star-rating-block" {{ block.shopify_attributes }}>
+  {% if okendo_product != blank %}
+    {% render 'okendo-reviews-product-rating-summary', product: okendo_product %}
+  {% endif %}
+</div>
+
+{% schema %}
+{
+  "name": "Okendo star rating",
+  "tag": null,
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Requires the Okendo Reviews app embed to be enabled. Styling is managed in Okendo Admin."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Okendo star rating"
+    }
+  ]
+}
+{% endschema %}
