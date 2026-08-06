@@ -1,0 +1,167 @@
+{%- liquid
+  assign product = closest.product
+  if request.visual_preview_mode and product == blank
+    assign product = collections.all.products.first
+  endif
+  assign initial_variant = product.selected_or_first_available_variant
+  assign is_available = initial_variant.available
+-%}
+
+<div
+  class="sms-back-in-stock sms-back-in-stock--{{ block.id }} spacing-style"
+  style="{% render 'spacing-style', settings: block.settings %}"
+  {% if is_available %}hidden{% endif %}
+  {{ block.shopify_attributes }}
+>
+  {%- if block.settings.heading != blank -%}
+    <p class="sms-back-in-stock__heading">{{ block.settings.heading | escape }}</p>
+  {%- endif -%}
+
+  <div id="ps__bis_target_container"></div>
+
+  <button
+    type="button"
+    class="button sms-back-in-stock__fallback"
+    data-sms-fallback
+  >
+    {{ block.settings.button_label | escape }}
+  </button>
+</div>
+
+{%- if product != blank -%}
+  <script type="application/json" id="sms-bis-data-{{ block.id }}">
+    {
+      {%- for v in product.variants -%}
+        {%- unless forloop.first -%},{%- endunless -%}
+        "{{ v.id }}": {{ v.available }}
+      {%- endfor -%}
+    }
+  </script>
+{%- endif -%}
+
+<script>
+  (function () {
+    var blockId = '{{ block.id }}';
+    var variantMap = {};
+
+    var dataEl = document.getElementById('sms-bis-data-' + blockId);
+    if (dataEl) {
+      try { variantMap = JSON.parse(dataEl.textContent); } catch (e) {}
+    }
+
+    function getBlockEl() {
+      return document.querySelector('.sms-back-in-stock--' + blockId);
+    }
+
+    function getVariantInput() {
+      return document.querySelector('form[data-type="add-to-cart-form"] input[name="id"]');
+    }
+
+    function applyVisibility() {
+      var blockEl = getBlockEl();
+      var input = getVariantInput();
+      if (!blockEl || !input) return;
+
+      // Warn if multiple BIS containers exist (Postscript SDK uses a singleton ID)
+      var allContainers = document.querySelectorAll('#ps__bis_target_container');
+      if (allContainers.length > 1) {
+        console.warn('[Postscript BIS] Multiple #ps__bis_target_container elements found on this page. The Postscript SDK will only populate the first one. Remove extra SMS Back in Stock blocks.');
+      }
+
+      var available = variantMap[input.value];
+      if (available === false) {
+        blockEl.removeAttribute('hidden');
+      } else {
+        blockEl.setAttribute('hidden', '');
+      }
+    }
+
+    function init() {
+      applyVisibility();
+
+      var input = getVariantInput();
+      if (!input) return;
+
+      // Primary: MutationObserver for setAttribute-based variant updates
+      var observer = new MutationObserver(applyVisibility);
+      observer.observe(input, { attributes: true, attributeFilter: ['value'] });
+
+      // Fallback: change / input events for .value property assignments (Horizon Component pattern)
+      input.addEventListener('change', applyVisibility);
+      input.addEventListener('input', applyVisibility);
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+  })();
+</script>
+
+{% stylesheet %}
+.sms-back-in-stock {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-xs, 12px);
+}
+
+.sms-back-in-stock__heading {
+  margin: 0;
+}
+
+.sms-back-in-stock__fallback {
+  align-self: flex-start;
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "SMS Back in Stock",
+  "tag": null,
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Out of stock"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Notify me via text"
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    }
+  ],
+  "presets": [
+    {
+      "name": "SMS Back in Stock",
+      "category": "Product"
+    }
+  ]
+}
+{% endschema %}

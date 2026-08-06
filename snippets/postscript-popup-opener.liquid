@@ -1,0 +1,23 @@
+<script>
+  (function () {
+    if (window.__ps_opener_init) return;
+    window.__ps_opener_init = true;
+
+    class PostscriptPopup {
+      static MOBILE_BREAKPOINT = 768;
+
+      static open(mobileId, desktopId) {
+        var isMobile = window.innerWidth < PostscriptPopup.MOBILE_BREAKPOINT;
+        var id = isMobile ? (mobileId || desktopId) : (desktopId || mobileId);
+        if (id && window.postscript && window.postscript.popups) {
+          window.postscript.popups.open(id, {
+            activePopupBehavior: 'ALWAYS_DISMISS',
+            respectPopupStatus: false
+          });
+        }
+      }
+    }
+
+    window.openPostscriptPopup = PostscriptPopup.open.bind(PostscriptPopup);
+  })();
+</script>

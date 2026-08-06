@@ -1,0 +1,96 @@
+{% render 'postscript-popup-opener' %}
+
+<div
+  class="sms-signup-block sms-signup-block--{{ block.id }} spacing-style"
+  style="{% render 'spacing-style', settings: block.settings %}"
+  {{ block.shopify_attributes }}
+>
+  {%- if block.settings.heading != blank -%}
+    <p class="sms-signup-block__heading">{{ block.settings.heading | escape }}</p>
+  {%- endif -%}
+  <button
+    type="button"
+    class="button sms-signup-block__btn"
+    data-ps-desktop="{{ block.settings.postscript_popup_id_desktop | escape }}"
+    data-ps-mobile="{{ block.settings.postscript_popup_id_mobile | escape }}"
+    onclick="window.openPostscriptPopup(this.dataset.psMobile, this.dataset.psDesktop)"
+  >
+    {{ block.settings.button_label | escape }}
+  </button>
+</div>
+
+{% stylesheet %}
+.sms-signup-block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-xs, 12px);
+}
+
+.sms-signup-block__heading {
+  margin: 0;
+}
+
+.sms-signup-block__btn {
+  align-self: flex-start;
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "SMS Signup",
+  "tag": null,
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Get exclusive SMS offers"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Sign up for texts"
+    },
+    {
+      "type": "text",
+      "id": "postscript_popup_id_desktop",
+      "label": "Desktop popup ID"
+    },
+    {
+      "type": "text",
+      "id": "postscript_popup_id_mobile",
+      "label": "Mobile popup ID (falls back to desktop if blank)"
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    }
+  ],
+  "presets": [
+    {
+      "name": "SMS Signup"
+    }
+  ]
+}
+{% endschema %}
