@@ -7,6 +7,8 @@
   assign is_available = initial_variant.available
 -%}
 
+{% render 'postscript-popup-opener' %}
+
 <div
   class="sms-back-in-stock sms-back-in-stock--{{ block.id }} spacing-style"
   style="{% render 'spacing-style', settings: block.settings %}"
@@ -23,6 +25,9 @@
     type="button"
     class="button sms-back-in-stock__fallback"
     data-sms-fallback
+    data-ps-desktop="{{ block.settings.postscript_popup_id_desktop | escape }}"
+    data-ps-mobile="{{ block.settings.postscript_popup_id_mobile | escape }}"
+    onclick="window.openPostscriptPopup(this.dataset.psMobile, this.dataset.psDesktop)"
   >
     {{ block.settings.button_label | escape }}
   </button>
@@ -76,6 +81,13 @@
       }
     }
 
+    function hideFallback() {
+      var blockEl = getBlockEl();
+      if (!blockEl) return;
+      var fallback = blockEl.querySelector('[data-sms-fallback]');
+      if (fallback) fallback.setAttribute('hidden', '');
+    }
+
     function init() {
       applyVisibility();
 
@@ -83,12 +95,31 @@
       if (!input) return;
 
       // Primary: MutationObserver for setAttribute-based variant updates
-      var observer = new MutationObserver(applyVisibility);
-      observer.observe(input, { attributes: true, attributeFilter: ['value'] });
+      var attrObserver = new MutationObserver(applyVisibility);
+      attrObserver.observe(input, { attributes: true, attributeFilter: ['value'] });
 
       // Fallback: change / input events for .value property assignments (Horizon Component pattern)
       input.addEventListener('change', applyVisibility);
       input.addEventListener('input', applyVisibility);
+
+      // Horizon CustomEvents: variant-picker components dispatch these on the document
+      document.addEventListener('variant:change', applyVisibility);
+      document.addEventListener('variant:select', applyVisibility);
+
+      // Mutual exclusivity: hide fallback button once Postscript SDK populates the BIS container
+      var container = document.getElementById('ps__bis_target_container');
+      if (container) {
+        var bisObserver = new MutationObserver(function (mutations) {
+          for (var i = 0; i < mutations.length; i++) {
+            if (mutations[i].addedNodes.length > 0) {
+              hideFallback();
+              bisObserver.disconnect();
+              break;
+            }
+          }
+        });
+        bisObserver.observe(container, { childList: true });
+      }
     }
 
     if (document.readyState === 'loading') {
@@ -100,6 +131,11 @@
 </script>
 
 {% stylesheet %}
+/* Ensure the hidden attribute is respected even with display:flex set below */
+.sms-back-in-stock[hidden] {
+  display: none !important;
+}
+
 .sms-back-in-stock {
   display: flex;
   flex-direction: column;
@@ -112,6 +148,11 @@
 
 .sms-back-in-stock__fallback {
   align-self: flex-start;
+}
+
+/* Hide fallback button once Postscript SDK has populated the container */
+.sms-back-in-stock__fallback[hidden] {
+  display: none !important;
 }
 {% endstylesheet %}
 
@@ -131,6 +172,16 @@
       "id": "button_label",
       "label": "Button label",
       "default": "Notify me via text"
+    },
+    {
+      "type": "text",
+      "id": "postscript_popup_id_desktop",
+      "label": "Desktop popup ID"
+    },
+    {
+      "type": "text",
+      "id": "postscript_popup_id_mobile",
+      "label": "Mobile popup ID (falls back to desktop if blank)"
     },
     {
       "type": "header",
