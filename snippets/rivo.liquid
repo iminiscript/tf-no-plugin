@@ -1,0 +1,48 @@
+{% doc %}
+  Rivo loyalty shared config snippet.
+  Resolves the rivo.loy shop metafield and outputs a single JSON config block
+  used by all Rivo JS modules. Render once in layout/theme.liquid <head>.
+
+  Outputs nothing if the loy metafield is blank (Rivo not configured).
+{% enddoc %}
+
+{% liquid
+  assign loy = shop.metafields.rivo.loy.value | default: shop.metafields.rivo.loy
+
+  if loy != blank
+    assign earn_entry = nil
+
+    # Walk ways_to_earn — try top-level first, then nested under points_program
+    assign ways_to_earn = loy.ways_to_earn
+    if ways_to_earn == blank
+      assign ways_to_earn = loy.points_program.ways_to_earn
+    endif
+
+    for entry in ways_to_earn
+      if entry.trigger == 'order_placed'
+        assign earn_entry = entry
+        break
+      endif
+    endfor
+  endif
+%}
+
+{% if loy != blank %}
+  <script type="application/json" id="rivo-config">
+    {
+      "earnRate": {
+        "pointsAmount": {{ earn_entry.points_amount | default: 0 | json }},
+        "currencyBaseAmount": {{ earn_entry.currency_base_amount | default: 1 | json }}
+      },
+      "discountPrefix": {{ settings.rivo_discount_prefix | json }},
+      "loyaltyCollection": {{ settings.rivo_loyalty_collection.handle | json }},
+      "showCartEarn": {{ settings.rivo_show_cart_earn | json }},
+      "showRedemption": {{ settings.rivo_show_redemption | json }},
+      "showWishlist": {{ settings.rivo_show_wishlist | json }},
+      "accountLink": {{ settings.rivo_account_link | json }},
+      "earnCalloutText": {{ settings.rivo_earn_callout_text | json }},
+      "earnCalloutGuestText": {{ settings.rivo_earn_callout_guest_text | json }},
+      "customerId": {{ customer.id | json }}
+    }
+  </script>
+{% endif %}

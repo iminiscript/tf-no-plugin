@@ -1,0 +1,16 @@
+<div {{ block.shopify_attributes }} class="rivo-earn-block">
+  {% render 'rivo-earn', product: product, context: 'pdp' %}
+</div>
+
+{% schema %}
+{
+  "name": "Loyalty points earn",
+  "tag": null,
+  "settings": [],
+  "presets": [
+    {
+      "name": "Loyalty points earn"
+    }
+  ]
+}
+{% endschema %}

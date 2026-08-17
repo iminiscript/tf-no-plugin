@@ -115,6 +115,16 @@
   >
     {{ children }}
   </div>
+
+  {% if settings.rivo_show_wishlist and onboarding == false %}
+    {% render 'rivo-wishlist-heart', product: product %}
+  {% endif %}
 </product-card>
+
+{% stylesheet %}
+  product-card {
+    position: relative;
+  }
+{% endstylesheet %}
 
 {% render 'product-card-styles' %}

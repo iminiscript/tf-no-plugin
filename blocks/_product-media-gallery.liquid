@@ -1,11 +1,17 @@
-{% render 'product-media-gallery-content',
-  media_presentation: block.settings.media_presentation,
-  block_settings: block.settings,
-  block_id: block.id,
-  block_shopify_attributes: block.shopify_attributes,
-  block: block,
-  section: section
-%}
+<div class="rivo-gallery-wrapper" style="position: relative;">
+  {% render 'product-media-gallery-content',
+    media_presentation: block.settings.media_presentation,
+    block_settings: block.settings,
+    block_id: block.id,
+    block_shopify_attributes: block.shopify_attributes,
+    block: block,
+    section: section
+  %}
+
+  {% if settings.rivo_show_wishlist %}
+    {% render 'rivo-wishlist-heart', product: product %}
+  {% endif %}
+</div>
 
 {% schema %}
 {

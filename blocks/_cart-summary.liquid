@@ -32,6 +32,12 @@
 >
   <div class="{{ cart_summary_inner_class }}">
     {% render 'cart-summary', accelerated_checkout_buttons_layout: 'vertical', section_id: section.id %}
+    {% if settings.rivo_show_cart_earn %}
+      {% render 'rivo-earn', context: 'cart', subtotal: cart.total_price %}
+    {% endif %}
+    {% if settings.rivo_show_redemption %}
+      {% render 'rivo-redemption' %}
+    {% endif %}
   </div>
 </div>
 

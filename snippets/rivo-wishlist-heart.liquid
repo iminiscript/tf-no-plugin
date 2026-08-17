@@ -1,0 +1,85 @@
+{% doc %}
+  Rivo wishlist heart button snippet.
+  Renders a toggleable heart button for adding/removing products from the Rivo wishlist.
+  The button state is managed by rivo-wishlist.js via aria-pressed.
+
+  @param {object} product - The product object.
+
+  @example
+  {% render 'rivo-wishlist-heart', product: product %}
+{% enddoc %}
+
+<button
+  type="button"
+  class="rivo-wishlist-heart"
+  aria-pressed="false"
+  data-rivo-wishlist-heart
+  data-product-id="{{ product.id }}"
+  aria-label="Add to wishlist"
+>
+  <span class="rivo-wishlist-heart__icon rivo-wishlist-heart__icon--outlined" aria-hidden="true">
+    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+    </svg>
+  </span>
+  <span class="rivo-wishlist-heart__icon rivo-wishlist-heart__icon--filled" aria-hidden="true">
+    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+    </svg>
+  </span>
+</button>
+
+{% stylesheet %}
+  .rivo-wishlist-heart {
+    position: absolute;
+    top: var(--padding-sm, 8px);
+    right: var(--padding-sm, 8px);
+    z-index: 2;
+    background: rgb(var(--color-background-rgb, 255 255 255) / 0.8);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    padding: var(--padding-xs, 6px);
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgb(var(--color-foreground-rgb, 0 0 0));
+    transition: transform 0.15s ease, background-color 0.15s ease;
+  }
+
+  .rivo-wishlist-heart:hover {
+    transform: scale(1.1);
+    background: rgb(var(--color-background-rgb, 255 255 255) / 0.95);
+  }
+
+  .rivo-wishlist-heart:focus-visible {
+    outline: 2px solid rgb(var(--color-foreground-rgb, 0 0 0));
+    outline-offset: 2px;
+  }
+
+  .rivo-wishlist-heart__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+  }
+
+  .rivo-wishlist-heart__icon--filled {
+    display: none;
+  }
+
+  .rivo-wishlist-heart[aria-pressed='true'] .rivo-wishlist-heart__icon--outlined {
+    display: none;
+  }
+
+  .rivo-wishlist-heart[aria-pressed='true'] .rivo-wishlist-heart__icon--filled {
+    display: flex;
+  }
+
+  .rivo-wishlist-heart[aria-pressed='true'] {
+    color: rgb(220 38 38);
+  }
+{% endstylesheet %}

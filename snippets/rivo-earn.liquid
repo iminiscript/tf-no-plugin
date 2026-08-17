@@ -1,0 +1,101 @@
+{% doc %}
+  Rivo loyalty earn callout snippet.
+  Renders a points-earn estimate for logged-in customers, or a sign-in prompt for guests.
+
+  @param {object} [product] - The product object (required for pdp context).
+  @param {string} context - Render context: 'pdp' or 'cart'.
+  @param {number} [subtotal] - Cart subtotal in cents (required for cart context).
+
+  @example
+  {% render 'rivo-earn', product: product, context: 'pdp' %}
+  {% render 'rivo-earn', context: 'cart', subtotal: cart.total_price %}
+{% enddoc %}
+
+{% liquid
+  assign loy = shop.metafields.rivo.loy.value | default: shop.metafields.rivo.loy
+
+  if loy != blank
+    assign earn_entry = nil
+
+    assign ways_to_earn = loy.ways_to_earn
+    if ways_to_earn == blank
+      assign ways_to_earn = loy.points_program.ways_to_earn
+    endif
+
+    for entry in ways_to_earn
+      if entry.trigger == 'order_placed'
+        assign earn_entry = entry
+        break
+      endif
+    endfor
+  endif
+%}
+
+{% if loy != blank and earn_entry != nil %}
+  {% liquid
+    # Determine the price in cents for the initial Liquid render
+    if context == 'cart'
+      assign price_in_cents = subtotal | default: 0
+    else
+      # pdp context: use the selected or first available variant price
+      assign price_in_cents = product.selected_or_first_available_variant.price | default: 0
+    endif
+
+    # Compute earn points: ceil(dollars / currencyBaseAmount * pointsAmount)
+    assign currency_base_amount = earn_entry.currency_base_amount | default: 1
+    assign points_amount = earn_entry.points_amount | default: 0
+    assign price_dollars = price_in_cents | divided_by: 100.0
+    assign earn_rate = price_dollars | divided_by: currency_base_amount
+    assign earn_points = earn_rate | times: points_amount | ceil
+  %}
+
+  <div
+    class="rivo-earn"
+    data-rivo-earn
+    data-rivo-context="{{ context }}"
+    data-subtotal="{{ price_in_cents }}"
+  >
+    {% unless customer %}
+      <p class="rivo-earn__text rivo-earn__text--guest">
+        <a href="{{ routes.account_login_url }}" class="rivo-earn__link">
+          {{- settings.rivo_earn_callout_guest_text -}}
+        </a>
+      </p>
+    {% else %}
+      {% liquid
+        assign earn_text = settings.rivo_earn_callout_text
+        assign points_placeholder = '{{points}}'
+        assign before_token = earn_text | split: points_placeholder | first
+        assign after_token = earn_text | split: points_placeholder | last
+      %}
+      <p class="rivo-earn__text">
+        {{- before_token -}}<span
+          class="rivo-earn__points"
+          data-loyalty-earn-value
+        >{{- earn_points -}}</span>{{- after_token -}}
+      </p>
+    {% endunless %}
+  </div>
+
+  {% stylesheet %}
+    .rivo-earn {
+      width: 100%;
+      font-size: 0.875em;
+      text-align: center;
+    }
+
+    .rivo-earn__text {
+      margin: 0;
+      color: rgb(var(--color-foreground-rgb));
+    }
+
+    .rivo-earn__link {
+      color: inherit;
+      text-decoration: underline;
+    }
+
+    .rivo-earn__points {
+      font-weight: bold;
+    }
+  {% endstylesheet %}
+{% endif %}

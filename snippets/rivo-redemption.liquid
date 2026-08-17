@@ -1,0 +1,242 @@
+{% doc %}
+  Rivo loyalty cart redemption rail snippet.
+  Renders redeemable reward cards for logged-in customers.
+  State (claimed/redeemable/hidden) is managed by rivo-redemption.js.
+
+  @example
+  {% render 'rivo-redemption' %}
+{% enddoc %}
+
+{% if customer and settings.rivo_show_redemption and settings.rivo_loyalty_collection != blank %}
+  {% liquid
+    assign loy = shop.metafields.rivo.loy.value | default: shop.metafields.rivo.loy
+  %}
+
+  {% if loy != blank %}
+    {% liquid
+      assign points_rewards = loy.points_program.points_rewards
+
+      # Collect enabled rewards joined to the merchant collection by product id
+      assign reward_collection = settings.rivo_loyalty_collection
+    %}
+
+    {% if points_rewards != blank %}
+      {% liquid
+        # Build list of reward product ids (normalised — last segment of GID or plain integer)
+        assign reward_count = 0
+      %}
+
+      <div
+        class="rivo-redemption"
+        data-rivo-redemption
+        data-prefix="{{ settings.rivo_discount_prefix | escape }}"
+      >
+        <div class="rivo-redemption__header">
+          <p class="rivo-redemption__title">Redeem your points</p>
+          <p class="rivo-redemption__balance-line">
+            Balance: <span class="rivo-redemption__balance" data-rivo-balance>—</span> pts
+          </p>
+        </div>
+
+        <div class="rivo-redemption__cards" data-rivo-cards>
+          {% for reward in points_rewards %}
+            {% if reward.enabled %}
+              {% liquid
+                # Normalise reward product id — strip GID prefix if present
+                assign reward_product_id_raw = reward.product_id | default: ''
+                assign reward_product_id_str = reward_product_id_raw | split: '/' | last
+              %}
+
+              {% liquid
+                # Find matching product in the loyalty collection
+                assign matched_product = nil
+                for col_product in reward_collection.products
+                  assign col_product_id_str = col_product.id | append: ''
+                  if col_product_id_str == reward_product_id_str
+                    assign matched_product = col_product
+                    break
+                  endif
+                endfor
+              %}
+
+              {% if matched_product != nil %}
+                {% assign reward_count = reward_count | plus: 1 %}
+                <div
+                  class="rivo-redemption__card"
+                  data-reward-id="{{ reward.id | escape }}"
+                  data-product-id="{{ matched_product.id }}"
+                  data-points-cost="{{ reward.points_amount }}"
+                  data-product-handle="{{ matched_product.handle | escape }}"
+                  data-state="redeemable"
+                >
+                  {% if matched_product.featured_media %}
+                    <div class="rivo-redemption__card-image">
+                      {{
+                        matched_product.featured_media.preview_image
+                        | image_url: width: 120
+                        | image_tag:
+                          loading: 'lazy',
+                          alt: matched_product.title,
+                          width: 60,
+                          height: 60
+                      }}
+                    </div>
+                  {% endif %}
+
+                  <div class="rivo-redemption__card-info">
+                    <p class="rivo-redemption__card-title">{{ matched_product.title | escape }}</p>
+                    <p class="rivo-redemption__card-cost">{{ reward.points_amount }} pts</p>
+                  </div>
+
+                  <div class="rivo-redemption__card-actions">
+                    <button
+                      type="button"
+                      class="rivo-redemption__redeem-btn button button-secondary"
+                      aria-label="Redeem {{ matched_product.title | escape }}"
+                    >
+                      Redeem
+                    </button>
+                    <p class="rivo-redemption__claimed-label" aria-live="polite">Added to cart</p>
+                  </div>
+                </div>
+              {% endif %}
+            {% endif %}
+          {% endfor %}
+        </div>
+
+        {% if reward_count == 0 %}
+          {%- comment -%}No matched rewards — output nothing useful, JS will handle hiding{%- endcomment -%}
+        {% endif %}
+
+        <p class="rivo-redemption__claimed-banner" data-rivo-claimed-banner aria-live="polite">
+          A reward has been applied to your cart.
+        </p>
+      </div>
+    {% endif %}
+  {% endif %}
+{% endif %}
+
+{% stylesheet %}
+  .rivo-redemption {
+    width: 100%;
+  }
+
+  .rivo-redemption__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-block-end: var(--gap-sm, 8px);
+  }
+
+  .rivo-redemption__title {
+    margin: 0;
+    font-weight: 600;
+    font-size: 0.875em;
+  }
+
+  .rivo-redemption__balance-line {
+    margin: 0;
+    font-size: 0.8em;
+    color: rgb(var(--color-foreground-rgb) / 0.7);
+  }
+
+  .rivo-redemption__balance {
+    font-weight: 600;
+  }
+
+  .rivo-redemption__cards {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm, 8px);
+    max-height: 300px;
+    overflow-y: auto;
+  }
+
+  .rivo-redemption__card {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm, 8px);
+    padding: var(--padding-sm, 8px);
+    border: 1px solid rgb(var(--color-foreground-rgb) / var(--opacity-10-25, 0.1));
+    border-radius: var(--style-border-radius-inputs, 8px);
+  }
+
+  .rivo-redemption__card[data-state='hidden'] {
+    display: none;
+  }
+
+  .rivo-redemption__card-image {
+    flex-shrink: 0;
+  }
+
+  .rivo-redemption__card-image img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 4px;
+  }
+
+  .rivo-redemption__card-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .rivo-redemption__card-title {
+    margin: 0 0 2px;
+    font-size: 0.875em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .rivo-redemption__card-cost {
+    margin: 0;
+    font-size: 0.8em;
+    color: rgb(var(--color-foreground-rgb) / 0.7);
+  }
+
+  .rivo-redemption__card-actions {
+    flex-shrink: 0;
+  }
+
+  .rivo-redemption__redeem-btn {
+    display: block;
+    font-size: 0.8em;
+    padding-block: 6px;
+    padding-inline: 12px;
+  }
+
+  .rivo-redemption__claimed-label {
+    display: none;
+    margin: 0;
+    font-size: 0.8em;
+    color: rgb(var(--color-foreground-rgb) / 0.7);
+    text-align: center;
+  }
+
+  .rivo-redemption__card[data-state='claimed'] .rivo-redemption__redeem-btn {
+    display: none;
+  }
+
+  .rivo-redemption__card[data-state='claimed'] .rivo-redemption__claimed-label {
+    display: block;
+  }
+
+  .rivo-redemption__claimed-banner {
+    display: none;
+    margin: var(--gap-sm, 8px) 0 0;
+    padding: var(--padding-sm, 8px);
+    background: rgb(var(--color-foreground-rgb) / 0.05);
+    border-radius: var(--style-border-radius-inputs, 8px);
+    font-size: 0.875em;
+    text-align: center;
+  }
+
+  .rivo-redemption[data-rail-claimed] .rivo-redemption__claimed-banner {
+    display: block;
+  }
+
+  .rivo-redemption[data-rail-claimed] .rivo-redemption__cards {
+    display: none;
+  }
+{% endstylesheet %}

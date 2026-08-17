@@ -117,6 +117,12 @@
 
                 <div class="cart-drawer__summary">
                   {% render 'cart-summary', section_id: 'cart-drawer-section' %}
+                  {% if settings.rivo_show_cart_earn %}
+                    {% render 'rivo-earn', context: 'cart', subtotal: cart.total_price %}
+                  {% endif %}
+                  {% if settings.rivo_show_redemption %}
+                    {% render 'rivo-redemption' %}
+                  {% endif %}
                 </div>
               </scroll-hint>
             {%- endif -%}

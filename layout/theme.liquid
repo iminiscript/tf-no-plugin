@@ -47,6 +47,29 @@
     {% endif %}
 
     {{ content_for_header }}
+
+    {%- render 'rivo' -%}
+
+    <script
+      type="module"
+      src="{{ 'rivo.js' | asset_url }}"
+      fetchpriority="low"
+    ></script>
+    <script
+      type="module"
+      src="{{ 'rivo-earn.js' | asset_url }}"
+      fetchpriority="low"
+    ></script>
+    <script
+      type="module"
+      src="{{ 'rivo-wishlist.js' | asset_url }}"
+      fetchpriority="low"
+    ></script>
+    <script
+      type="module"
+      src="{{ 'rivo-redemption.js' | asset_url }}"
+      fetchpriority="low"
+    ></script>
   </head>
 
   <body class="page-width-{{ settings.page_width }} card-hover-effect-{{ settings.card_hover_effect }}">
