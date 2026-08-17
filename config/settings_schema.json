@@ -2116,5 +2116,31 @@
         "default": "equal-width-buttons"
       }
     ]
+  },
+  {
+    "name": "Postscript SMS",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Load the Postscript SDK via the app embed in Theme Settings → App embeds (recommended). Only fill the Shop ID below if the app embed is unavailable."
+      },
+      {
+        "type": "text",
+        "id": "postscript_shop_id",
+        "label": "Postscript Shop ID",
+        "info": "Leave blank if the Postscript app embed is enabled — do not fill both."
+      }
+    ]
+  },
+  {
+    "name": "Analytics",
+    "settings": [
+      {
+        "type": "text",
+        "id": "gtm_container_id",
+        "label": "Google Tag Manager container ID",
+        "info": "e.g. GTM-XXXXXXX. Leave blank to disable GTM and the dataLayer loader."
+      }
+    ]
   }
 ]
