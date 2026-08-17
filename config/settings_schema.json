@@ -2116,5 +2116,23 @@
         "default": "equal-width-buttons"
       }
     ]
+  },
+  {
+    "name": "Analytics",
+    "settings": [
+      {
+        "type": "text",
+        "id": "gtm_container_id",
+        "label": "Google Tag Manager container ID",
+        "info": "e.g. GTM-XXXXXXX. Leave blank to disable GTM."
+      },
+      {
+        "type": "checkbox",
+        "id": "gtm_debug_mode",
+        "label": "dataLayer debug mode",
+        "info": "Logs every dataLayer event to the browser console. Turn off for production.",
+        "default": false
+      }
+    ]
   }
 ]

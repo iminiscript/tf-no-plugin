@@ -87,6 +87,13 @@
     class="product-card__link"
     ref="productCardLink"
     aria-label="{{ product.title | escape }}"
+    {% unless onboarding %}
+      data-dl-id="{{ variant_to_link.sku | default: variant_to_link.id }}"
+      data-dl-name="{{ product.title | escape }}"
+      data-dl-brand="{{ product.vendor | escape }}"
+      data-dl-price="{{ variant_to_link.price }}"
+      data-dl-variant="{{ variant_to_link.title | escape }}"
+    {% endunless %}
   ></a>
   <div
     class="

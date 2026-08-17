@@ -6,6 +6,7 @@
   lang="{{ request.locale.iso_code }}"
 >
   <head>
+    {%- render 'gtm', part: 'head' -%}
     {%- if settings.favicon != blank -%}
       <link
         rel="icon"
@@ -47,9 +48,12 @@
     {% endif %}
 
     {{ content_for_header }}
+    <script defer src="{{ 'datalayer.js' | asset_url }}"></script>
+    <script defer src="{{ 'gtm-events.js' | asset_url }}"></script>
   </head>
 
   <body class="page-width-{{ settings.page_width }} card-hover-effect-{{ settings.card_hover_effect }}">
+    {%- render 'gtm', part: 'body' -%}
     {% render 'skip-to-content-link', href: '#MainContent', text: 'accessibility.skip_to_text' %}
 
     {% render 'chat-drawer' %}

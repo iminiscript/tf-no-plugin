@@ -1,3 +1,23 @@
+<script type="application/json" id="dl-product-ctx">
+  {
+    "product": {
+      "title": {{ closest.product.title | json }},
+      "vendor": {{ closest.product.vendor | json }},
+      "variants": [
+        {% for variant in closest.product.variants %}
+          {
+            "id": {{ variant.id | json }},
+            "sku": {{ variant.sku | json }},
+            "title": {{ variant.title | json }},
+            "price": {{ variant.price | json }}
+          }{% unless forloop.last %},{% endunless %}
+        {% endfor %}
+      ]
+    },
+    "selected_variant_id": {{ closest.product.selected_or_first_available_variant.id | json }}
+  }
+</script>
+
 <script type="application/ld+json">
   {{ closest.product | structured_data }}
 </script>
