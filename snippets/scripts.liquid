@@ -35,7 +35,8 @@
       "@theme/sticky-add-to-cart": "{{ 'sticky-add-to-cart.js' | asset_url }}",
       "@theme/fly-to-cart": "{{ 'fly-to-cart.js' | asset_url }}",
       "@theme/scroll-container": "{{ 'scroll-container.js' | asset_url }}",
-      "@theme/theme-drawer": "{{ 'theme-drawer.js' | asset_url }}"
+      "@theme/theme-drawer": "{{ 'theme-drawer.js' | asset_url }}",
+      "@theme/intelligems": "{{ 'intelligems.js' | asset_url }}"
     }
   }
 </script>
@@ -254,6 +255,11 @@
 ></script>
 <script
   src="{{ 'volume-pricing-info.js' | asset_url }}"
+  type="module"
+  fetchpriority="low"
+></script>
+<script
+  src="{{ 'intelligems.js' | asset_url }}"
   type="module"
   fetchpriority="low"
 ></script>

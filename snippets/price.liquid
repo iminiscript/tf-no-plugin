@@ -5,11 +5,13 @@
   @param {product} product_resource - The product to render
   @param {boolean} [show_unit_price] - Whether to show the unit price
   @param {boolean} [show_sale_price_first] - Whether to show the sale price first
+  @param {boolean} [enable_intelligems] - Whether to apply Intelligems igPrice/igComparePrice classes and data-product-id for price A/B testing (default: true)
 {%- enddoc -%}
 
 {%- liquid
   assign show_unit_price = show_unit_price | default: false
   assign show_sale_price_first = show_sale_price_first | default: false
+  assign enable_intelligems = enable_intelligems | default: true
   assign selected_variant = product_resource.selected_or_first_available_variant
   assign price = selected_variant.price
   assign compare_at_price = selected_variant.compare_at_price
@@ -76,12 +78,12 @@
   {% if has_volume_pricing %}
     {% comment %} Volume pricing display {% endcomment %}
     {% if show_compare_price %}
-      <span class="price-item__group compare-at-price">
+      <span class="price-item__group compare-at-price{% if enable_intelligems %} igComparePrice{% endif %}"{% if enable_intelligems %} data-product-id="{{ product_resource.id }}"{% endif %}>
         <span class="visually-hidden">{{ 'content.price_regular' | t }}&nbsp;</span>
         {{- compare_at_price -}}
       </span>
     {% endif %}
-    <span class="price-item__group price">
+    <span class="price-item__group price{% if enable_intelligems %} igPrice{% endif %}"{% if enable_intelligems %} data-product-id="{{ product_resource.id }}"{% endif %}>
       <span class="visually-hidden">{{ 'content.price_range' | t }}&nbsp;</span>
       {{ price_min }} - {{ price_max }}
     </span>
@@ -89,26 +91,26 @@
     {% comment %} Standard pricing display: render only the active branch (regular or sale) {% endcomment %}
     {% if show_compare_price %}
       {% if show_sale_price_first %}
-        <span class="price-item__group price">
+        <span class="price-item__group price{% if enable_intelligems %} igPrice{% endif %}"{% if enable_intelligems %} data-product-id="{{ product_resource.id }}"{% endif %}>
           <span class="visually-hidden">{{ 'content.price_sale' | t }}&nbsp;</span>
           {{ price | default: '&nbsp;' }}
         </span>
-        <span class="price-item__group price-item--regular compare-at-price">
+        <span class="price-item__group price-item--regular compare-at-price{% if enable_intelligems %} igComparePrice{% endif %}"{% if enable_intelligems %} data-product-id="{{ product_resource.id }}"{% endif %}>
           <span class="visually-hidden">{{ 'content.price_regular' | t }}&nbsp;</span>
           {{- compare_at_price -}}
         </span>
       {% else %}
-        <span class="price-item__group price-item--regular compare-at-price">
+        <span class="price-item__group price-item--regular compare-at-price{% if enable_intelligems %} igComparePrice{% endif %}"{% if enable_intelligems %} data-product-id="{{ product_resource.id }}"{% endif %}>
           <span class="visually-hidden">{{ 'content.price_regular' | t }}&nbsp;</span>
           {{- compare_at_price -}}
         </span>
-        <span class="price-item__group price">
+        <span class="price-item__group price{% if enable_intelligems %} igPrice{% endif %}"{% if enable_intelligems %} data-product-id="{{ product_resource.id }}"{% endif %}>
           <span class="visually-hidden">{{ 'content.price_sale' | t }}&nbsp;</span>
           {{ price | default: '&nbsp;' }}
         </span>
       {% endif %}
     {% else %}
-      <span class="price">{{ price | default: '&nbsp;' }}</span>
+      <span class="price{% if enable_intelligems %} igPrice{% endif %}"{% if enable_intelligems %} data-product-id="{{ product_resource.id }}"{% endif %}>{{ price | default: '&nbsp;' }}</span>
     {% endif %}
   {% endif %}
   {%- if selected_variant.unit_price and show_unit_price %}
