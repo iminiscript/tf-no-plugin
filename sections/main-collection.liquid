@@ -90,6 +90,28 @@
   </results-list>
 </collection-component>
 
+<script type="application/json" id="CollectionDatalayerContext">
+  {
+    "list_id": {{ collection.handle | json }},
+    "list_name": {{ collection.title | json }},
+    "currency": {{ cart.currency.iso_code | json }},
+    "products": [
+      {% for product in collection.products limit: 50 %}
+        {% assign datalayer_variant = product.selected_or_first_available_variant %}
+        {
+          "id": {{ product.id }},
+          "variantId": {{ datalayer_variant.id }},
+          "sku": {{ datalayer_variant.sku | json }},
+          "title": {{ product.title | json }},
+          "vendor": {{ product.vendor | json }},
+          "price": {{ datalayer_variant.price }},
+          "index": {{ forloop.index }}
+        }{% unless forloop.last %},{% endunless %}
+      {% endfor %}
+    ]
+  }
+</script>
+
 {% schema %}
 {
   "name": "t:names.collection_container",

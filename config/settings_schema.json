@@ -2131,5 +2131,16 @@
         "info": "Leave blank if the Postscript app embed is enabled — do not fill both."
       }
     ]
+  },
+  {
+    "name": "Analytics",
+    "settings": [
+      {
+        "type": "text",
+        "id": "gtm_container_id",
+        "label": "Google Tag Manager container ID",
+        "info": "e.g. GTM-XXXXXXX. Leave blank to disable GTM and the dataLayer loader."
+      }
+    ]
   }
 ]

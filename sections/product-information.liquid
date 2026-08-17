@@ -181,6 +181,26 @@
   additional_blocks: additional_blocks
 %}
 
+<script type="application/json" id="ProductDatalayerContext">
+  {
+    "product_id": {{ product.id | json }},
+    "title": {{ product.title | json }},
+    "vendor": {{ product.vendor | json }},
+    "currency": {{ cart.currency.iso_code | json }},
+    "variants": [
+      {% for variant in product.variants %}
+        {
+          "id": {{ variant.id }},
+          "sku": {{ variant.sku | json }},
+          "title": {{ variant.title | json }},
+          "price": {{ variant.price }},
+          "available": {{ variant.available }}
+        }{% unless forloop.last %},{% endunless %}
+      {% endfor %}
+    ]
+  }
+</script>
+
 {% stylesheet %}
   .sticky-add-to-cart__bar {
     position: fixed;

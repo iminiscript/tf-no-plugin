@@ -1,0 +1,25 @@
+{%- comment -%}
+  Renders the Google Tag Manager loader snippet.
+  Gated on settings.gtm_container_id — renders nothing when blank.
+
+  @param {string} part - 'head' for the synchronous JS snippet; 'body' for the noscript fallback.
+
+  Usage:
+    {%- render 'gtm', part: 'head' -%}  ← place in <head>, before other scripts
+    {%- render 'gtm', part: 'body' -%}  ← place immediately after <body> opens
+{%- endcomment -%}
+{%- if settings.gtm_container_id != blank -%}
+  {%- if part == 'head' -%}
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+      new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+      'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+      })(window,document,'script','dataLayer','{{ settings.gtm_container_id | escape }}');
+    </script>
+  {%- elsif part == 'body' -%}
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ settings.gtm_container_id | escape }}"
+      height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  {%- endif -%}
+{%- endif -%}
