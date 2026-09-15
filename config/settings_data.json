@@ -113,7 +113,6 @@
     "rivo_earn_cart": false,
     "rivo_earn_copy": "Earn {{points}} points with this purchase",
     "rivo_redemption_enabled": false,
-    "loyalty_collection": "",
     "loyalty_discount_prefix": "RIVO",
     "rivo_exclusion_keywords": "protection,warranty",
     "rivo_wishlist_enabled": false

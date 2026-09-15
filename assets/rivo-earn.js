@@ -159,6 +159,19 @@ function refreshPdpCallouts(config) {
   const targets = document.querySelectorAll('[data-loyalty-earn-pdp]');
   if (!targets.length) return;
 
+  // Resolve product data for exclusion guard
+  let productData = null;
+  const variantJsonEl = document.querySelector('[data-product-json]');
+  if (variantJsonEl) {
+    try { productData = JSON.parse(variantJsonEl.textContent); } catch { /* pass */ }
+  }
+
+  // If this product matches an exclusion keyword, hide all PDP earn targets and stop
+  if (isExcluded(productData, config.exclusionKeywords)) {
+    targets.forEach((target) => { target.hidden = true; });
+    return;
+  }
+
   const isGuest = !config.customerId;
   targets.forEach((target) => {
     const priceCents = resolveQualifyingCents('pdp', target);
@@ -172,8 +185,27 @@ function refreshCartCallouts(config) {
   const targets = document.querySelectorAll('[data-loyalty-earn-cart]');
   if (!targets.length) return;
 
+  // For cart-level earn, check each target's own product context attributes
+  // (populated on line-level callouts) or fall back to any product JSON on the page.
+  // A null / empty product resolves to isExcluded=false so the cart-total callout shows.
+  let pageProductData = null;
+  const variantJsonEl = document.querySelector('[data-product-json]');
+  if (variantJsonEl) {
+    try { pageProductData = JSON.parse(variantJsonEl.textContent); } catch { /* pass */ }
+  }
+
   const isGuest = !config.customerId;
   targets.forEach((target) => {
+    // Prefer target-level product data attributes; fall back to page-level product JSON
+    const targetProduct = {
+      title: target.dataset.productTitle || pageProductData?.title || '',
+      vendor: target.dataset.productVendor || pageProductData?.vendor || '',
+      type: target.dataset.productType || pageProductData?.type || ''
+    };
+    if (isExcluded(targetProduct, config.exclusionKeywords)) {
+      target.hidden = true;
+      return;
+    }
     const priceCents = resolveQualifyingCents('cart', target);
     const points =
       priceCents !== null ? earnPoints(priceCents, config) : null;
