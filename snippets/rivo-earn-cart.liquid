@@ -5,7 +5,7 @@
   Gated by settings.rivo_earn_cart. Uses the same formula as rivo-earn.js:
   ceil((total_price / 100) / currencyBaseAmount * pointsAmount).
 
-  @param {string} [surface] - 'drawer' or 'page'
+  @param {string} [surface] - 'drawer' or 'page' — adds a BEM modifier class and data-surface attribute so JS and CSS can target each placement independently
   @param {object} [cart] - The Shopify cart object
 
   @example
@@ -38,9 +38,10 @@
   -%}
 
   <div
-    class="rivo-earn-cart"
+    class="rivo-earn-cart{% if surface != blank %} rivo-earn-cart--{{ surface }}{% endif %}"
     data-loyalty-earn-cart
     data-loyalty-earn-value="{{ earn_points }}"
+    {% if surface != blank %}data-surface="{{ surface }}"{% endif %}
   >
     {%- if customer -%}
       {%- assign earn_copy = settings.rivo_earn_copy | default: 'Earn {{points}} points with this purchase' -%}

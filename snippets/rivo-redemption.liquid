@@ -22,11 +22,12 @@
     {% if loy != blank %}
       {%- liquid
         assign discount_prefix = settings.loyalty_discount_prefix | default: 'RIVO'
+        assign prefix_upper = discount_prefix | upcase
         assign rivo_code_applied = false
         for discount in cart.discount_codes
           assign discount_code_upper = discount.code | upcase
-          assign prefix_upper = discount_prefix | upcase
-          if discount_code_upper contains prefix_upper
+          assign truncated = discount_code_upper | truncate: prefix_upper.size, ''
+          if truncated == prefix_upper
             assign rivo_code_applied = true
             break
           endif
