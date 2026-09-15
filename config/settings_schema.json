@@ -2116,5 +2116,98 @@
         "default": "equal-width-buttons"
       }
     ]
+  },
+  {
+    "name": "Analytics",
+    "settings": [
+      {
+        "type": "text",
+        "id": "gtm_container_id",
+        "label": "Google Tag Manager container ID",
+        "info": "e.g. GTM-XXXXXXX. Leave blank to disable GTM."
+      },
+      {
+        "type": "checkbox",
+        "id": "gtm_debug_mode",
+        "label": "dataLayer debug mode",
+        "info": "Logs every dataLayer event to the browser console. Turn off for production.",
+        "default": false
+      }
+    ]
+  },
+  {
+    "name": "Rivo loyalty & wishlist",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Account"
+      },
+      {
+        "type": "checkbox",
+        "id": "rivo_account_link",
+        "label": "Open Rivo widget from account link",
+        "info": "When enabled, the header account link opens the Rivo loyalty widget instead of the native account page.",
+        "default": false
+      },
+      {
+        "type": "header",
+        "content": "Earn callouts"
+      },
+      {
+        "type": "checkbox",
+        "id": "rivo_show_cart_earn",
+        "label": "Show earn callout in cart",
+        "info": "Displays loyalty points earn estimate in the cart drawer and cart page.",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "rivo_earn_callout_text",
+        "label": "Earn callout text (logged in)",
+        "info": "Use {{points}} as a token for the computed points value.",
+        "default": "Earn {{points}} points with this purchase"
+      },
+      {
+        "type": "text",
+        "id": "rivo_earn_callout_guest_text",
+        "label": "Earn callout text (guest)",
+        "default": "Sign in to earn loyalty points"
+      },
+      {
+        "type": "header",
+        "content": "Redemption"
+      },
+      {
+        "type": "checkbox",
+        "id": "rivo_show_redemption",
+        "label": "Show cart redemption rail",
+        "info": "Displays redeemable reward cards in the cart drawer and cart page.",
+        "default": true
+      },
+      {
+        "type": "collection",
+        "id": "rivo_loyalty_collection",
+        "label": "Reward products collection",
+        "info": "Select the collection containing your Rivo reward products."
+      },
+      {
+        "type": "text",
+        "id": "rivo_discount_prefix",
+        "label": "Rivo discount code prefix",
+        "info": "Must match the prefix configured in Rivo admin. Used to detect and gate the redemption rail.",
+        "default": "RIVO"
+      },
+      {
+        "type": "header",
+        "content": "Wishlist"
+      },
+      {
+        "type": "checkbox",
+        "id": "rivo_show_wishlist",
+        "label": "Show wishlist heart buttons",
+        "info": "Displays a heart button on product cards and the product detail page gallery.",
+        "default": true
+      }
+    ]
   }
 ]
