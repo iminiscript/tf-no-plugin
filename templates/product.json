@@ -6,18 +6,11 @@
  * or related systems. Please exercise caution as any changes
  * made to this file may be overwritten.
  * ------------------------------------------------------------
- */
-{
+ */{
   "sections": {
     "main": {
       "type": "product-information",
       "blocks": {
-        "okendo_star_rating_Xc6rkd": {
-          "type": "shopify://apps/okendo/blocks/star-rating/bb689e69-ea70-4661-8fb7-ad24a2e23c29",
-          "settings": {
-            "product": "{{closest.product}}"
-          }
-        },
         "disclosures_g9mWze": {
           "type": "disclosures",
           "name": "t:names.disclosures",
@@ -45,7 +38,6 @@
             "media_columns": "two",
             "image_gap": 4,
             "large_first_image": false,
-            "icons_style": "arrow",
             "slideshow_controls_style": "counter",
             "slideshow_mobile_controls_style": "dots",
             "thumbnail_position": "right",
@@ -93,12 +85,6 @@
             "padding-inline-end": 0
           },
           "blocks": {
-            "okendo_star_rating_WP3Tbr": {
-              "type": "shopify://apps/okendo/blocks/star-rating/bb689e69-ea70-4661-8fb7-ad24a2e23c29",
-              "settings": {
-                "product": "{{closest.product}}"
-              }
-            },
             "group_icgrde": {
               "type": "group",
               "name": "t:names.header",
@@ -130,7 +116,6 @@
                 "border_opacity": 100,
                 "border_color": "",
                 "border_radius": 0,
-                "link": "",
                 "open_in_new_tab": false,
                 "placeholder": "",
                 "padding-block-start": 0,
@@ -288,18 +273,6 @@
               },
               "block_order": []
             },
-            "rivo_loyalty_rewards_referrals_potential_points_kE8aH9": {
-              "type": "shopify://apps/rivo-loyalty-rewards-referrals/blocks/potential-points/580e9665-b2cd-4dbc-b6ba-6445ac9e6871",
-              "settings": {
-                "panel_color": "#A62323",
-                "panel_padding": 10,
-                "title": "Order and get [potential_points] reward points",
-                "subtext": "Earn points by signing up for our rewards program",
-                "show_icon": true,
-                "logged_out_only": true,
-                "custom_css": ""
-              }
-            },
             "text_aEtTtq": {
               "type": "text",
               "name": "t:names.product_description",
@@ -328,18 +301,15 @@
             }
           },
           "block_order": [
-            "okendo_star_rating_WP3Tbr",
             "group_icgrde",
             "divider_VJhene",
             "variant_picker_R3rGDr",
             "buy_buttons_eYQEYi",
-            "rivo_loyalty_rewards_referrals_potential_points_kE8aH9",
             "text_aEtTtq"
           ]
         }
       },
       "block_order": [
-        "okendo_star_rating_Xc6rkd",
         "disclosures_g9mWze"
       ],
       "settings": {
@@ -352,37 +322,6 @@
         "background_color": "{{ settings.color_palette.background }}",
         "padding-block-start": 0,
         "padding-block-end": 0
-      }
-    },
-    "okendo_reviews_section_pdp": {
-      "type": "section",
-      "settings": {
-        "content_direction": "column",
-        "vertical_on_mobile": true,
-        "horizontal_alignment": "flex-start",
-        "vertical_alignment": "center",
-        "align_baseline": false,
-        "horizontal_alignment_flex_direction_column": "flex-start",
-        "vertical_alignment_flex_direction_column": "center",
-        "gap": 12,
-        "section_width": "page-width",
-        "section_height": "",
-        "section_height_custom": 50,
-        "background_media": "none",
-        "background_color": "",
-        "video_position": "cover",
-        "background_image_position": "cover",
-        "toggle_overlay": false,
-        "overlay_color": "#00000026",
-        "overlay_style": "solid",
-        "gradient_direction": "to top",
-        "border": "none",
-        "border_width": 1,
-        "border_opacity": 100,
-        "border_color": "",
-        "border_radius": 0,
-        "padding-block-start": 48,
-        "padding-block-end": 48
       }
     },
     "product_recommendations_qggXJq": {
@@ -530,7 +469,6 @@
   },
   "order": [
     "main",
-    "okendo_reviews_section_pdp",
     "product_recommendations_qggXJq"
   ]
 }
