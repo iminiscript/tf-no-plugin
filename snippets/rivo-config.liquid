@@ -1,0 +1,74 @@
+{% doc %}
+  Rivo Config
+
+  Outputs the centralised Rivo configuration JSON block and conditionally
+  loads all Rivo JS modules. Render once inside <head>, after {{ content_for_header }}.
+
+  @example
+  {% render 'rivo-config' %}
+{% enddoc %}
+
+{%- liquid
+  # Resolve the Rivo metafield — guard against the .value trap
+  assign loy = shop.metafields.rivo.loy.value | default: shop.metafields.rivo.loy
+
+  # Resolve earn rate — iterate ways_to_earn with points_program fallback
+  assign points_amount = 0
+  assign currency_base_amount = 1
+  assign ways_to_earn = loy.ways_to_earn
+  if ways_to_earn == blank
+    assign ways_to_earn = loy.points_program.ways_to_earn
+  endif
+  for way in ways_to_earn
+    if way.trigger == 'order_placed'
+      assign points_amount = way.points_amount
+      assign currency_base_amount = way.currency_base_amount
+      break
+    endif
+  endfor
+  if currency_base_amount == blank or currency_base_amount == 0
+    assign currency_base_amount = 1
+  endif
+
+  # Feature flags
+  assign flag_account_link = settings.rivo_account_link
+  assign flag_earn_pdp = settings.rivo_earn_pdp
+  assign flag_earn_cart = settings.rivo_earn_cart
+  assign flag_redemption = settings.rivo_redemption_enabled
+  assign flag_wishlist = settings.rivo_wishlist_enabled
+
+  # Customer ID (0 for guests)
+  assign customer_id = customer.id | default: 0
+-%}
+
+<script type="application/json" id="rivo-config">
+  {
+    "pointsAmount": {{ points_amount | default: 0 }},
+    "currencyBaseAmount": {{ currency_base_amount | default: 1 }},
+    "discountPrefix": {{ settings.loyalty_discount_prefix | default: 'RIVO' | json }},
+    "earnCopyTemplate": {{ settings.rivo_earn_copy | default: 'Earn {{points}} points with this purchase' | json }},
+    "exclusionKeywords": {{ settings.rivo_exclusion_keywords | default: '' | split: ',' | json }},
+    "accountLink": {{ flag_account_link | json }},
+    "earnPdp": {{ flag_earn_pdp | json }},
+    "earnCart": {{ flag_earn_cart | json }},
+    "redemption": {{ flag_redemption | json }},
+    "wishlist": {{ flag_wishlist | json }},
+    "customerId": {{ customer_id }}
+  }
+</script>
+
+{%- if settings.rivo_account_link -%}
+  <script type="module" src="{{ 'rivo-account.js' | asset_url }}" fetchpriority="low"></script>
+{%- endif -%}
+
+{%- if settings.rivo_earn_pdp or settings.rivo_earn_cart -%}
+  <script type="module" src="{{ 'rivo-earn.js' | asset_url }}" fetchpriority="low"></script>
+{%- endif -%}
+
+{%- if settings.rivo_redemption_enabled -%}
+  <script type="module" src="{{ 'rivo-redemption.js' | asset_url }}" fetchpriority="low"></script>
+{%- endif -%}
+
+{%- if settings.rivo_wishlist_enabled -%}
+  <script type="module" src="{{ 'rivo-wishlist.js' | asset_url }}" fetchpriority="low"></script>
+{%- endif -%}

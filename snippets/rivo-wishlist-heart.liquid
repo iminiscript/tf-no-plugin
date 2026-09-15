@@ -1,0 +1,80 @@
+{% doc %}
+  Rivo Wishlist Heart Button
+
+  Renders an absolutely-positioned wishlist toggle button for a product.
+  Gated by settings.rivo_wishlist_enabled and a non-blank product.id.
+  aria-pressed defaults to 'false' so async-injected buttons hydrate correctly.
+  rivo-wishlist.js (loaded centrally by rivo-config.liquid) handles all state.
+
+  @param {object} product - The product object
+
+  @example
+  {% render 'rivo-wishlist-heart', product: product %}
+{% enddoc %}
+
+{% if settings.rivo_wishlist_enabled and product.id != blank %}
+  <button
+    class="rivo-wishlist-heart"
+    type="button"
+    aria-pressed="false"
+    data-rivo-wishlist-heart
+    data-product-id="{{ product.id }}"
+    aria-label="Add to wishlist"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+    </svg>
+  </button>
+{% endif %}
+
+{% stylesheet %}
+  .rivo-wishlist-heart {
+    position: absolute;
+    top: var(--padding-sm, 8px);
+    right: var(--padding-sm, 8px);
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    background: transparent;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    color: currentColor;
+    transition: color 0.2s ease, background-color 0.2s ease;
+  }
+
+  .rivo-wishlist-heart:hover {
+    background-color: rgb(var(--color-background-rgb, 255 255 255) / 0.8);
+  }
+
+  .rivo-wishlist-heart svg {
+    width: 20px;
+    height: 20px;
+    pointer-events: none;
+  }
+
+  .rivo-wishlist-heart[aria-pressed='true'] svg {
+    fill: currentColor;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .rivo-wishlist-heart {
+      transition: none;
+    }
+  }
+{% endstylesheet %}

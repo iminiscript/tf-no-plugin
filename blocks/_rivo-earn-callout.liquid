@@ -1,0 +1,60 @@
+{% if settings.rivo_earn_pdp %}
+  {%- liquid
+    assign loy = shop.metafields.rivo.loy.value | default: shop.metafields.rivo.loy
+
+    assign points_amount = 0
+    assign currency_base_amount = 1
+    assign ways_to_earn = loy.ways_to_earn
+    if ways_to_earn == blank
+      assign ways_to_earn = loy.points_program.ways_to_earn
+    endif
+    for way in ways_to_earn
+      if way.trigger == 'order_placed'
+        assign points_amount = way.points_amount
+        assign currency_base_amount = way.currency_base_amount
+        break
+      endif
+    endfor
+    if currency_base_amount == blank or currency_base_amount == 0
+      assign currency_base_amount = 1
+    endif
+
+    assign earn_points = product.selected_or_first_available_variant.price | divided_by: 100.0 | divided_by: currency_base_amount | times: points_amount | ceil
+  -%}
+
+  <div
+    class="rivo-earn-pdp"
+    data-loyalty-earn-pdp
+    data-loyalty-earn-value="{{ earn_points }}"
+    {{ block.shopify_attributes }}
+  >
+    {%- if customer -%}
+      {%- assign earn_copy = settings.rivo_earn_copy | default: 'Earn {{points}} points with this purchase' -%}
+      {%- assign earn_copy = earn_copy | replace: '{{points}}', earn_points -%}
+      <p class="rivo-earn-pdp__text">{{ earn_copy }}</p>
+    {%- else -%}
+      <p class="rivo-earn-pdp__text">
+        <a href="{{ routes.account_login_url }}">Sign in</a> to earn points on this purchase
+      </p>
+    {%- endif -%}
+  </div>
+{% endif %}
+
+{% stylesheet %}
+  .rivo-earn-pdp {
+    padding-block: var(--padding-sm, 8px);
+  }
+
+  .rivo-earn-pdp__text {
+    font-size: var(--font-size-sm, 0.875rem);
+    margin: 0;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Rivo earn callout",
+  "tag": null,
+  "settings": []
+}
+{% endschema %}

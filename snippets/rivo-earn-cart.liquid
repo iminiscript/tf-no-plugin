@@ -1,0 +1,67 @@
+{% doc %}
+  Rivo Earn Cart Callout
+
+  Renders the points-earn callout inside the cart drawer and cart page.
+  Gated by settings.rivo_earn_cart. Uses the same formula as rivo-earn.js:
+  ceil((total_price / 100) / currencyBaseAmount * pointsAmount).
+
+  @param {string} [surface] - 'drawer' or 'page'
+  @param {object} [cart] - The Shopify cart object
+
+  @example
+  {% render 'rivo-earn-cart', surface: 'drawer', cart: cart %}
+{% enddoc %}
+
+{% if settings.rivo_earn_cart %}
+  {%- liquid
+    assign loy = shop.metafields.rivo.loy.value | default: shop.metafields.rivo.loy
+
+    assign points_amount = 0
+    assign currency_base_amount = 1
+    assign ways_to_earn = loy.ways_to_earn
+    if ways_to_earn == blank
+      assign ways_to_earn = loy.points_program.ways_to_earn
+    endif
+    for way in ways_to_earn
+      if way.trigger == 'order_placed'
+        assign points_amount = way.points_amount
+        assign currency_base_amount = way.currency_base_amount
+        break
+      endif
+    endfor
+    if currency_base_amount == blank or currency_base_amount == 0
+      assign currency_base_amount = 1
+    endif
+
+    assign cart_total_cents = cart.total_price | default: 0
+    assign earn_points = cart_total_cents | divided_by: 100.0 | divided_by: currency_base_amount | times: points_amount | ceil
+  -%}
+
+  <div
+    class="rivo-earn-cart"
+    data-loyalty-earn-cart
+    data-loyalty-earn-value="{{ earn_points }}"
+  >
+    {%- if customer -%}
+      {%- assign earn_copy = settings.rivo_earn_copy | default: 'Earn {{points}} points with this purchase' -%}
+      {%- assign earn_copy = earn_copy | replace: '{{points}}', earn_points -%}
+      <p class="rivo-earn-cart__text">{{ earn_copy }}</p>
+    {%- else -%}
+      <p class="rivo-earn-cart__text">
+        <a href="{{ routes.account_login_url }}">Sign in</a> to earn points on this purchase
+      </p>
+    {%- endif -%}
+  </div>
+{% endif %}
+
+{% stylesheet %}
+  .rivo-earn-cart {
+    padding-block: var(--padding-sm, 8px);
+  }
+
+  .rivo-earn-cart__text {
+    font-size: var(--font-size-sm, 0.875rem);
+    text-align: center;
+    margin: 0;
+  }
+{% endstylesheet %}

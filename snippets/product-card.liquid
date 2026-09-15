@@ -115,6 +115,9 @@
   >
     {{ children }}
   </div>
+  {% if settings.rivo_wishlist_enabled and onboarding == false %}
+    {% render 'rivo-wishlist-heart', product: product %}
+  {% endif %}
 </product-card>
 
 {% render 'product-card-styles' %}

@@ -84,6 +84,7 @@
     %}
     <div
       class="account-button header-actions__action{% if display_style == 'text' %} account-button--text{% endif %} color-custom-popover"
+      {% if settings.rivo_account_link %}data-rivo-account{% endif %}
     >
       <shopify-account
         menu="{{ customer_account_menu }}"

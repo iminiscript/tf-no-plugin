@@ -2116,5 +2116,68 @@
         "default": "equal-width-buttons"
       }
     ]
+  },
+  {
+    "name": "Rivo Loyalty & Wishlist",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Rivo Loyalty & Wishlist"
+      },
+      {
+        "type": "checkbox",
+        "id": "rivo_account_link",
+        "label": "Open Rivo widget from account link",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "rivo_earn_pdp",
+        "label": "Show points earn on product pages",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "rivo_earn_cart",
+        "label": "Show points earn in cart",
+        "default": false
+      },
+      {
+        "type": "text",
+        "id": "rivo_earn_copy",
+        "label": "Earn callout copy",
+        "default": "Earn {{points}} points with this purchase",
+        "info": "Use {{points}} as placeholder for the calculated points value"
+      },
+      {
+        "type": "checkbox",
+        "id": "rivo_redemption_enabled",
+        "label": "Enable reward redemption in cart",
+        "default": false
+      },
+      {
+        "type": "collection",
+        "id": "loyalty_collection",
+        "label": "Reward products collection"
+      },
+      {
+        "type": "text",
+        "id": "loyalty_discount_prefix",
+        "label": "Rivo discount code prefix",
+        "default": "RIVO"
+      },
+      {
+        "type": "text",
+        "id": "rivo_exclusion_keywords",
+        "label": "Exclude products from earn (comma-separated keywords matched against title/vendor/type)",
+        "default": "protection,warranty"
+      },
+      {
+        "type": "checkbox",
+        "id": "rivo_wishlist_enabled",
+        "label": "Enable wishlist hearts on products",
+        "default": false
+      }
+    ]
   }
 ]

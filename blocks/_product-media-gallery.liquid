@@ -1,11 +1,23 @@
-{% render 'product-media-gallery-content',
-  media_presentation: block.settings.media_presentation,
-  block_settings: block.settings,
-  block_id: block.id,
-  block_shopify_attributes: block.shopify_attributes,
-  block: block,
-  section: section
-%}
+<div class="rivo-gallery-wrapper">
+  {% render 'product-media-gallery-content',
+    media_presentation: block.settings.media_presentation,
+    block_settings: block.settings,
+    block_id: block.id,
+    block_shopify_attributes: block.shopify_attributes,
+    block: block,
+    section: section
+  %}
+  {% if settings.rivo_wishlist_enabled %}
+    {%- assign gallery_product = closest.product -%}
+    {% render 'rivo-wishlist-heart', product: gallery_product %}
+  {% endif %}
+</div>
+
+{% stylesheet %}
+  .rivo-gallery-wrapper {
+    position: relative;
+  }
+{% endstylesheet %}
 
 {% schema %}
 {
