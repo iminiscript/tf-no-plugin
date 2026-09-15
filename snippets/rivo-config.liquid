@@ -39,6 +39,10 @@
 
   # Customer ID (0 for guests)
   assign customer_id = customer.id | default: 0
+
+  # Earn copy — pre-assign default to avoid nested {{ }} in output tag
+  assign earn_copy_default = 'Earn {{points}} points with this purchase'
+  assign earn_copy = settings.rivo_earn_copy | default: earn_copy_default
 -%}
 
 <script type="application/json" id="rivo-config">
@@ -46,7 +50,7 @@
     "pointsAmount": {{ points_amount | default: 0 }},
     "currencyBaseAmount": {{ currency_base_amount | default: 1 }},
     "discountPrefix": {{ settings.loyalty_discount_prefix | default: 'RIVO' | json }},
-    "earnCopyTemplate": {{ settings.rivo_earn_copy | default: 'Earn {{points}} points with this purchase' | json }},
+    "earnCopyTemplate": {{ earn_copy | json }},
     "exclusionKeywords": {{ settings.rivo_exclusion_keywords | default: '' | split: ',' | json }},
     "accountLink": {{ flag_account_link | json }},
     "earnPdp": {{ flag_earn_pdp | json }},
